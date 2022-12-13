@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+from django.http import HttpRequest
+
 from . import models
 # Register your models here.
 class UserCreationForm(forms.ModelForm):
@@ -78,7 +80,7 @@ class classStartTimeAdmin(admin.ModelAdmin):
 @admin.register(models.attendance)
 class attendanceAdmin(admin.ModelAdmin):
 
-    list_display = ('date','classname','class_start_time','headcount')
+    list_display = ('date','class_start_time','classname','headcount')
 
     def get_changeform_initial_data(self, request):
         return {'lecturer': request.user}
@@ -88,4 +90,19 @@ class attendanceAdmin(admin.ModelAdmin):
             kwargs["queryset"] = models.User.objects.filter(id=request.user.id).all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
+    def get_queryset(self, request) :
+        if not request.user.is_superuser:
+            return super().get_queryset(request).filter(lecturer = request.user)
+        return super().get_queryset(request)
+    
 
+    def get_list_display(self, request):
+        if request.user.is_superuser:
+            return ('date','class_start_time','classname','headcount','lecturer',)
+
+        return super().get_list_display(request)
+    
+    def get_list_filter(self, request: HttpRequest):
+        if request.user.is_superuser:
+            return ('date','classname','class_start_time','lecturer')
+        return super().get_list_filter(request)

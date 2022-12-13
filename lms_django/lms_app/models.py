@@ -47,6 +47,9 @@ class User(AbstractUser):
 
     objects         = UserManager()
 
+    def __str__(self) -> str:
+        return (f"{self.first_name} {self.last_name}")  if (len(self.first_name)>0 or len(self.last_name)>0) else self.email
+
 class className(models.Model):
     name            = models.CharField(max_length=100)
     active          = models.BooleanField(default=True)
