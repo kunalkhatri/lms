@@ -1,0 +1,9 @@
+#site_logo_image {
+    height: 40px;
+}
+
+:root {
+    --header-bg : white;
+    --header-color:black;
+    --header-link-color:black;
+  }
