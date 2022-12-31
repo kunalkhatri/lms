@@ -25,20 +25,20 @@ SECRET_KEY = env.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.13.14', 'attendance.amzdashboard.com']
+ALLOWED_HOSTS = ['127.0.0.1','192.168.13.14','192.168.13.12', 'attendance.amzdashboard.com']
 
 AUTH_USER_MODEL = 'lms_app.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'lms_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lms_app',
 ]
 
 MIDDLEWARE = [
@@ -119,7 +119,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 import os
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR,'lms_app', 'static/')
+
 
 
 # Default primary key field type
