@@ -86,14 +86,18 @@ class attendanceAdmin(admin.ModelAdmin):
         return {'lecturer': request.user}
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "lecturer" and not request.user.is_superuser :
-            kwargs["queryset"] = models.User.objects.filter(id=request.user.id).all()
+        if db_field.name == "lecturer":
+            if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists() :
+                return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            else:
+                kwargs["queryset"] = models.User.objects.filter(id=request.user.id).all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
     def get_queryset(self, request) :
-        if not request.user.is_superuser:
-            return super().get_queryset(request).filter(lecturer = request.user)
-        return super().get_queryset(request)
+        if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists():
+            return super().get_queryset(request)
+        
+        return super().get_queryset(request).filter(lecturer = request.user)
     
 
     def get_list_display(self, request):
