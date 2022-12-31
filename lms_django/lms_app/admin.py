@@ -101,13 +101,13 @@ class attendanceAdmin(admin.ModelAdmin):
     
 
     def get_list_display(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists():
             return ('date','class_start_time','classname','headcount','lecturer',)
 
         return super().get_list_display(request)
     
     def get_list_filter(self, request: HttpRequest):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists():
             return ('date','classname','class_start_time','lecturer')
         return super().get_list_filter(request)
 
