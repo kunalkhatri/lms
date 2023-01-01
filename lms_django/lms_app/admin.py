@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -73,17 +73,30 @@ class UserAdmin(BaseUserAdmin):
 class classNameAdmin(admin.ModelAdmin):
     pass
 
+class classStartTimeForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if self.instance.pk is not None:
+            # a previous record is being saved, so we let it be
+            return cleaned_data
+        else:
+            # a new record is being added, so we check if there is another record
+            if models.classStartTime.objects.all().count() > 0:
+                raise ValidationError("You may not add another class Start Time. Max Limit is set to 1.")
+            else:
+                return cleaned_data
+
+
 @admin.register(models.classStartTime)
 class classStartTimeAdmin(admin.ModelAdmin):
+    form = classStartTimeForm
     pass
 
 @admin.register(models.attendance)
 class attendanceAdmin(admin.ModelAdmin):
 
     list_display = ('date','class_start_time','classname','headcount')
-
-    def get_changeform_initial_data(self, request):
-        return {'lecturer': request.user}
+    fields = ('lecturer','class_start_time', 'classname', 'date','headcount')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "lecturer":
@@ -91,6 +104,16 @@ class attendanceAdmin(admin.ModelAdmin):
                 return super().formfield_for_foreignkey(db_field, request, **kwargs)
             else:
                 kwargs["queryset"] = models.User.objects.filter(id=request.user.id).all()
+                kwargs['initial'] = request.user.id
+                kwargs['disabled'] = True
+
+        if db_field.name == "class_start_time":
+            if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists() :
+                return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            else:
+                kwargs['initial'] = models.classStartTime.objects.first() or None
+                kwargs['disabled'] = True
+
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
     def get_queryset(self, request) :

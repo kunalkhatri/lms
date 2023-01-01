@@ -58,7 +58,7 @@ class className(models.Model):
         return self.name
 
 class classStartTime(models.Model):
-    time            = models.TimeField(verbose_name="Class Start Time")
+    time            = models.TimeField(verbose_name="Class Start Time",unique=True)
 
     def __str__(self) -> str:
         return str(self.time)
@@ -69,6 +69,10 @@ class attendance(models.Model):
     class_start_time= models.ForeignKey(classStartTime,on_delete=models.DO_NOTHING)
     date            = models.DateField(default=timezone.now)
     headcount       = models.IntegerField()
+    class Meta:
+        constraints =   [
+            models.UniqueConstraint(fields=['classname','date'],name="One attendance for one class and a date")
+        ]
 
     def __str__(self) -> str:
         return f"{self.classname} | {self.class_start_time} | {self.headcount} "
