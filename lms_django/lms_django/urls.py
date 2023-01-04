@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from . import update_codebase
 urlpatterns = [
+    path ('update_codebase', update_codebase.update_codebase),
     path('', admin.site.urls),
 ]
