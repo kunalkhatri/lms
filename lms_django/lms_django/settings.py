@@ -25,7 +25,7 @@ SECRET_KEY = env.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.13.14','192.168.13.12', 'attendance.amzdashboard.com']
+ALLOWED_HOSTS = ['10.30.101.5','127.0.0.1','192.168.13.14','192.168.13.12', 'attendance.amzdashboard.com']
 
 AUTH_USER_MODEL = 'lms_app.User'
 
