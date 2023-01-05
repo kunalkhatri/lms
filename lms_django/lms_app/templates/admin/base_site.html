@@ -1,6 +1,11 @@
 {% extends 'admin/base_site.html' %}
 {% load static %}
 
+{% block title %}
+    LMS for Poornima College of Engineering
+{% endblock %}
+
+
 {% block branding %}
 <h1 id="site-name"><a href="{% url 'admin:index' %}"> <img alt="Poornima Group" id="site_logo_image" src={% static 'img/poornima_logo.jpg' %} /></a></h1>
 {% endblock %}
