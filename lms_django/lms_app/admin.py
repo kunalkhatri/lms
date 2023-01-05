@@ -133,6 +133,3 @@ class attendanceAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.groups.filter(name = "HODs").exists():
             return ('date','classname','class_start_time','lecturer')
         return super().get_list_filter(request)
-
-admin.site.site_header = "Poornima LMS"
-admin.site.site_title = "Poornima LMS"
