@@ -1,5 +1,10 @@
-name: HTTP Request Triggering git pull on server
-  uses: fjogeleit/http-request-action@v1.12.0
-  with:
-    url: https://attendance.amzdashboard.com/update_codebase
-    method: GET
+on: [push]
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Stage
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://attendance.amzdashboard.com/update_codebase'
+        method: 'GET'
